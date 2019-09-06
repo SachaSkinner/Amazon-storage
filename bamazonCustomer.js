@@ -53,11 +53,13 @@ var postMessages = function (database) {
 
 
         if (ifIdExists()) {
-
-            if (answerQuantity > database[answerID].stock_quantity) {
+            if (answerQuantity > database[answerID -1].stock_quantity) {
                 return console.log("Not enough supplies though, sorry..");
             }
-            return console.log("Your total is here.....!");
+            
+            var total = answerQuantity * database[answerID -1].price;
+
+            return console.log("Your total is " + total);
         }
 
 
