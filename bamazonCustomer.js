@@ -21,7 +21,28 @@ function Start(){
         if(err)throw err;  
         console.table(rows);  
         console.log("Here are our fresh and neat Bamazona products!");
-        
+        console.log("-----------------------------");
+        postMessages(rows);
     }); 
 } 
+
+var postMessages = function(database){
+    inquirer.prompt([{
+        name: "item",
+        type: "input",
+        message: "What product ID would you like to buy?",
+        validate: function(val){
+
+            return !isNaN(val)
+        }
+    }, {
+        name: "quantity",
+        type: "input",
+        message: "How many items of this product would you like to purchase?",
+        validate: function(val){
+           
+            return !isNaN(val);
+        }
+    }])
+}
 
