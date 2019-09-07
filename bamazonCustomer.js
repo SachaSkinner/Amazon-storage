@@ -8,12 +8,11 @@ var connection = mysql.createConnection({
     database: "bamazona"
 })
 
-
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id: " + connection.threadId)
     Start()
-    connection.end();
+
 });
 
 function Start() {
@@ -23,8 +22,6 @@ function Start() {
         console.log("Here are our fresh and neat Bamazona products!");
         console.log("-----------------------------");
         postMessages(rows);
-        // console.log(rows[0].item_id);
-
     });
 }
 
@@ -46,34 +43,52 @@ var postMessages = function (database) {
             return !isNaN(val);
         }
     }]).then(function (answer) {
-        console.log(database);
 
+        var choosenIdIndex;
         var answerID = parseInt(answer.item);
         var answerQuantity = parseInt(answer.quantity);
 
 
         if (ifIdExists()) {
-            if (answerQuantity > database[answerID -1].stock_quantity) {
+            if (answerQuantity > database[choosenIdIndex].stock_quantity) {
                 return console.log("Not enough supplies though, sorry..");
             }
-            
-            var total = answerQuantity * database[answerID -1].price;
 
-            return console.log("Your total is " + total);
+            connection.query("UPDATE products SET ? WHERE ?", [{
+                stock_quantity: database[choosenIdIndex].stock_quantity - answerQuantity
+            },
+            { item_id: answerID }], function (err) {
+                if (err) throw err;
+                connection.end();
+            })
+            var total = answerQuantity * database[choosenIdIndex].price;
+
+            return console.log("Your total is " + total + " dollars");
+
         }
-
-
+         
         function ifIdExists() {
 
             for (var i = 0; i < database.length; i++) {
+
                 if (answerID === database[i].item_id) {
+                    choosenIdIndex = i;
                     console.log("Nice choice!");
                     return true;
+                    
                 }
             }
             console.log("No such thing!");
             return false;
         }
-
+         
     })
+    
+    
+
 }
+
+
+
+
+
