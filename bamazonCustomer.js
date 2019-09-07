@@ -20,7 +20,7 @@ function Start() {
         if (err) throw err;
         console.table(rows);
         console.log("Here are our fresh and neat Bamazona products!");
-        console.log("-----------------------------");
+        console.log("----------------------------------------------");
         postMessages(rows);
     });
 }
@@ -51,7 +51,9 @@ var postMessages = function (database) {
 
         if (ifIdExists()) {
             if (answerQuantity > database[choosenIdIndex].stock_quantity) {
-                return console.log("Not enough supplies though, sorry..");
+                console.log("Not enough supplies though, sorry, try again!") ;
+                console.log("--------------------------");
+                return postMessages(database);
             }
 
             connection.query("UPDATE products SET ? WHERE ?", [{
@@ -63,7 +65,13 @@ var postMessages = function (database) {
             })
             var total = answerQuantity * database[choosenIdIndex].price;
 
-            return console.log("Your total is " + total + " dollars");
+            console.log("Your total is " + total + " dollars");
+            console.log("Thanks for shopping!")
+            console.log("See you!:)")
+            console.log("--------------------------");
+
+
+          
 
         }
          
@@ -73,12 +81,18 @@ var postMessages = function (database) {
 
                 if (answerID === database[i].item_id) {
                     choosenIdIndex = i;
+                    console.log("--------------------------");
                     console.log("Nice choice!");
                     return true;
                     
                 }
             }
+            console.log("--------------------------");
             console.log("No such thing!");
+            console.log("Try again!")
+            console.log("--------------------------");
+
+            postMessages(database);
             return false;
         }
          
